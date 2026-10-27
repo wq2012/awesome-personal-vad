@@ -28,6 +28,7 @@ For example, these will **NOT** be accepted:
 * Publications not directly related to Personal VAD or Target-Speaker VAD:
   * Standard speaker-agnostic VAD papers.
   * Pure speaker verification or speaker recognition papers.
+  * General speaker diarization, target speaker extraction, or target-speaker ASR papers that do not focus on Personal VAD or TS-VAD.
 
 ### Software
 
