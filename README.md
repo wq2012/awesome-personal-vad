@@ -4,15 +4,17 @@
 
 * [Overview](#overview)
 * [Software](#software)
-  * [Personal VAD implementations](#personal-vad-implementations)
-  * [Target-Speaker VAD (TS-VAD) implementations](#target-speaker-vad-ts-vad-implementations)
 * [Pretrained models](#pretrained-models)
   * [Personal VAD 1.0 & 2.0 collection](#personal-vad-10--20-collection)
-  * [Target-Speaker VAD (TS-VAD) models](#target-speaker-vad-ts-vad-models)
+  * [Other pretrained checkpoints](#other-pretrained-checkpoints)
 * [Demos](#demos)
 * [Publications](#publications)
-  * [Personal VAD (Speaker-Conditioned VAD)](#personal-vad-speaker-conditioned-vad)
-  * [Target-Speaker VAD (TS-VAD)](#target-speaker-vad-ts-vad)
+  * [Foundational and benchmark papers](#foundational-and-benchmark-papers)
+  * [Architectures, losses, and streaming models](#architectures-losses-and-streaming-models)
+  * [Speaker enrollment, representation, and profile robustness](#speaker-enrollment-representation-and-profile-robustness)
+  * [Self-supervised pretraining, adaptation, and weak supervision](#self-supervised-pretraining-adaptation-and-weak-supervision)
+  * [Multi-channel, spatial, and audio-visual methods](#multi-channel-spatial-and-audio-visual-methods)
+  * [Joint modeling with ASR, speech extraction, and speaker verification](#joint-modeling-with-asr-speech-extraction-and-speaker-verification)
 * [Other learning materials](#other-learning-materials)
   * [Tutorials](#tutorials)
   * [Project pages and slides](#project-pages-and-slides)
@@ -24,15 +26,13 @@
 
 This is a curated list of awesome **Personal Voice Activity Detection (Personal VAD)** — also known as **Speaker-Conditioned Voice Activity Detection** or **Target-Speaker Voice Activity Detection (TS-VAD)** — papers, libraries, pretrained models, demos, and other resources.
 
-Unlike standard Voice Activity Detection (VAD), which classifies each audio frame into speech vs. non-speech regardless of who is speaking, **Personal VAD** and **Target-Speaker VAD** condition the detector on one or more target speakers' voice profiles (such as d-vectors, x-vectors, i-vectors, or reference speech segments) to detect frame-level voice activity exclusively for the enrolled target speaker(s) while ignoring competing speakers and background noise. It serves both as an ultra-lightweight on-device gatekeeper for personalized streaming speech recognition and full-duplex voice assistants, and as a core neural building block for overlap-aware multi-speaker diarization.
+Unlike standard Voice Activity Detection (VAD), which classifies each audio frame into speech vs. non-speech regardless of who is speaking, **Personal VAD** (or **TS-VAD**) conditions the detector on one or more target speakers' voice profiles (such as d-vectors, x-vectors, i-vectors, or reference speech segments) to detect frame-level voice activity exclusively for the enrolled target speaker(s) while ignoring competing speakers and background noise. It serves both as an ultra-lightweight on-device gatekeeper for personalized streaming speech recognition and full-duplex voice assistants, and as a core neural building block for overlap-aware multi-speaker diarization.
 
-The purpose of this repo is to organize the world's resources for Personal VAD and Target-Speaker VAD, and make them universally accessible and useful.
+The purpose of this repo is to organize the world's resources for Personal VAD / Target-Speaker VAD, and make them universally accessible and useful.
 
 To add items to this page, simply send a pull request. ([contributing guide](CONTRIBUTING.md))
 
 ## Software
-
-### Personal VAD implementations
 
 | Link | Language | Description |
 | ---- | -------- | ----------- |
@@ -40,11 +40,6 @@ To add items to this page, simply send a pull request. ([contributing guide](CON
 | [personalVAD](https://github.com/pirxus/personalVAD) ![GitHub stars](https://img.shields.io/github/stars/pirxus/personalVAD?style=social) | Python & PyTorch & Kaldi | Unofficial PyTorch and Kaldi implementation of [Personal VAD: Speaker-Conditioned Voice Activity Detection](https://arxiv.org/abs/1908.04284) (`ET`, `ST`, `SET`, Weighted Pairwise Loss, and joint frame-level x-vector training) from Šimon Sedláček's bachelor's thesis at BUT Speech@FIT. |
 | [Personal-vad-2.0](https://github.com/fclearner/Personal-vad-2.0) ![GitHub stars](https://img.shields.io/github/stars/fclearner/Personal-vad-2.0?style=social) | Python & PyTorch | PyTorch implementation of [Personal VAD 2.0: Optimizing Personal Voice Activity Detection for On-Device Speech Recognition](https://arxiv.org/abs/2204.03793) with a 4-layer causal Conformer encoder, 2-layer Speaker Pre-Net, FiLM cosine conditioning, and CAM++ speaker embeddings. |
 | [Personal_VAD](https://github.com/chenCFD/Personal_VAD) ![GitHub stars](https://img.shields.io/github/stars/chenCFD/Personal_VAD?style=social) | Python & PyTorch | Lightweight PyTorch implementation of Personal VAD 1.0 (`ET` Embedding-Conditioned Training) using `Resemblyzer` d-vectors and synthetic concatenated LibriSpeech mixtures. |
-
-### Target-Speaker VAD (TS-VAD) implementations
-
-| Link | Language | Description |
-| ---- | -------- | ----------- |
 | [kaldi-asr (CHiME-6 Track 2 TS-VAD)](https://github.com/kaldi-asr/kaldi/tree/master/egs/chime6/s5c_track2) ![GitHub stars](https://img.shields.io/github/stars/kaldi-asr/kaldi?style=social) | Bash & Python & C++ | Official Kaldi recipe (`local/ts-vad/`) introducing [Target-Speaker Voice Activity Detection (TS-VAD)](https://arxiv.org/abs/2005.07272) for multi-speaker diarization in dinner-party scenarios. |
 | [TS-VAD](https://github.com/dodohow1011/TS-VAD) ![GitHub stars](https://img.shields.io/github/stars/dodohow1011/TS-VAD?style=social) | Python & PyTorch | PyTorch implementation of Target-Speaker Voice Activity Detection (TS-VAD) for CHiME-6 multi-speaker diarization. |
 | [AED-TSVAD](https://github.com/Clovermax/AED-TSVAD) ![GitHub stars](https://img.shields.io/github/stars/Clovermax/AED-TSVAD?style=social) | Python & PyTorch | Official PyTorch implementation and pretrained weights for Attention-Based Encoder-Decoder Target-Speaker Voice Activity Detection (`AED-TSVAD`) with WavLM representations across AMI, AISHELL-4, AliMeeting, CHiME-6, DIHARD, VoxConverse, and NOTSOFAR-1. |
@@ -78,7 +73,7 @@ The [**Personal VAD Hugging Face Collection (`wq2012/personal-vad`)**](https://h
 | [wq2012/personal-vad-v2-lstm-std-vad](https://huggingface.co/wq2012/personal-vad-v2-lstm-std-vad) | PVAD 2.0 (`B1`) | 1.71M (`1.91 MB`) | **3-Layer LayerNorm LSTM Standard VAD**: PVAD 2.0 Architecture `B1` 2-class speaker-agnostic Standard VAD baseline. |
 | [wq2012/personal-vad-v2-conformer-std-vad](https://huggingface.co/wq2012/personal-vad-v2-conformer-std-vad) | PVAD 2.0 (`B2`) | 683K (`856.2 KB`) | **4-Layer Causal Conformer Standard VAD**: PVAD 2.0 Architecture `B2` 2-class speaker-agnostic Standard VAD baseline. |
 
-### Target-Speaker VAD (TS-VAD) models
+### Other pretrained checkpoints
 
 | Model | Framework | Description |
 | ----- | --------- | ----------- |
@@ -95,48 +90,60 @@ The [**Personal VAD Hugging Face Collection (`wq2012/personal-vad`)**](https://h
 
 ## Publications
 
-### Personal VAD (Speaker-Conditioned VAD)
+### Foundational and benchmark papers
 
-* [Adaptive Speaker Embedding Self-Augmentation for Personal Voice Activity Detection with Short Enrollment Speech](https://arxiv.org/abs/2601.12769), *IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)*, 2026
-* [HyWA: Architecture-Preserving Personalized Voice Activity Detection for Full-Duplex Voice Assistants](https://arxiv.org/abs/2510.12947), *arXiv preprint arXiv:2510.12947*, 2025
-* [Universal Speaker Embedding Free Target Speaker Extraction and Personal Voice Activity Detection](https://arxiv.org/abs/2501.03612), *Computer Speech & Language*, 2025
 * [Comparative Analysis of Personalized Voice Activity Detection Systems: Assessing Real-World Effectiveness](https://arxiv.org/abs/2406.09443), *Proc. Interspeech*, 2024
-* [Investigation of Speaker Representation for Target-Speaker Speech Processing](https://arxiv.org/abs/2410.11243), *IEEE Spoken Language Technology Workshop (SLT)*, 2024
-* [Personal Voice Activity Detection with Ultra-Short Reference Speech](https://doi.org/10.1109/APSIPAASC63619.2024.10849125), *Asia-Pacific Signal and Information Processing Association Annual Summit and Conference (APSIPA ASC)*, 2024
-* [Self-supervised Pretraining for Robust Personalized Voice Activity Detection in Adverse Conditions](https://arxiv.org/abs/2312.16613), *IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)*, 2024
-* [AS-PVAD: A Frame-Wise Personalized Voice Activity Detection Network with Attentive Score Loss](https://doi.org/10.1109/ICASSP48485.2024.10446941), *IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)*, 2024
-* [Efficient Personal Voice Activity Detection with Wake Word Reference Speech](https://doi.org/10.1109/ICASSP48485.2024.10447922), *IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)*, 2024
-* [SVVAD: Personal Voice Activity Detection for Speaker Verification](https://arxiv.org/abs/2305.19581), *Proc. Interspeech*, 2023
-* [Array Configuration-Agnostic Personal Voice Activity Detection Based on Spatial Coherence](https://arxiv.org/abs/2304.08887), *Proc. INTER-NOISE*, 2023
 * [Personal VAD 2.0: Optimizing Personal Voice Activity Detection for On-Device Speech Recognition](https://arxiv.org/abs/2204.03793) ([Google Scholar](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=cB62SPcAAAAJ&citation_for_view=cB62SPcAAAAJ:sSrBHYA8nusC)), *Proc. Interspeech*, 2022
-* [Enrollment-less training for personalized voice activity detection](https://arxiv.org/abs/2106.12132), *Proc. Interspeech*, 2021
-* [Personalizing Speech Start Point and End Point Detection in ASR Systems from Speaker Embeddings](https://doi.org/10.1109/SLT48900.2021.9383603), *IEEE Spoken Language Technology Workshop (SLT)*, 2021
-* [Sparsely Overlapped Speech Training in the Time Domain: Joint Learning of Target Speech Separation and Personal VAD Benefits](https://arxiv.org/abs/2106.14371), *Asia-Pacific Signal and Information Processing Association Annual Summit and Conference (APSIPA ASC)*, 2021
+* [Target-Speaker Voice Activity Detection: a Novel Approach for Multi-Speaker Diarization in a Dinner Party Scenario](https://arxiv.org/abs/2005.07272), *Proc. Interspeech*, 2020
 * [Personal VAD: Speaker-Conditioned Voice Activity Detection](https://arxiv.org/abs/1908.04284) ([Google Scholar](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=cB62SPcAAAAJ&citation_for_view=cB62SPcAAAAJ:KxtntwgDAa4C)), *Proc. Odyssey The Speaker and Language Recognition Workshop*, 2020
 * [End-to-End Speaker-Dependent Voice Activity Detection](https://arxiv.org/abs/2009.09906), *National Conference on Man-Machine Speech Communication (NCMMSC)*, 2019
 
-### Target-Speaker VAD (TS-VAD)
+### Architectures, losses, and streaming models
 
 * [Target-Speaker Voice Activity Detection with Chunk-Level Speaker Queries](https://github.com/nttcslab-sp/chunk-level_TS-VAD), *IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)*, 2026
-* [End-to-End Target Speaker Speech Recognition with Voice Activity Detection Fusion](https://doi.org/10.1016/j.dsp.2026.105966), *Digital Signal Processing*, 2026
+* [HyWA: Architecture-Preserving Personalized Voice Activity Detection for Full-Duplex Voice Assistants](https://arxiv.org/abs/2510.12947), *arXiv preprint arXiv:2510.12947*, 2025
 * [Flow-TSVAD: Target-Speaker Voice Activity Detection via Latent Flow Matching for Speaker Diarization](https://arxiv.org/abs/2409.04859), *IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)*, 2025
-* [Multi-Input Multi-Output Target-Speaker Voice Activity Detection For Unified, Flexible, and Robust Audio-Visual Speaker Diarization](https://arxiv.org/abs/2401.08052), *IEEE/ACM Transactions on Audio, Speech, and Language Processing (TASLP)*, 2025
-* [Selective Channel Attention based Target Speaker Voice Activity Detection for Speaker Diarization under AD-HOC Microphone Array Settings](https://doi.org/10.21437/Interspeech.2025-1749), *Proc. Interspeech*, 2025
 * [TS-VAD+: Modularized Target-Speaker Voice Activity Detection for Robust Speaker Diarization](https://doi.org/10.1109/APSIPAASC65261.2025.11249081), *Asia-Pacific Signal and Information Processing Association Annual Summit and Conference (APSIPA ASC)*, 2025
-* [Noise-Robust Target-Speaker Voice Activity Detection Through Self-Supervised Pretraining](https://arxiv.org/abs/2501.03184), *arXiv preprint arXiv:2501.03184*, 2025
-* [EEND-SAA: Enrollment-Less Main Speaker Voice Activity Detection Using Self-Attention Attractors](https://arxiv.org/abs/2509.11957), *arXiv preprint arXiv:2509.11957*, 2025
-* [Profile-Error-Tolerant Target-Speaker Voice Activity Detection](https://arxiv.org/abs/2309.12521), *IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)*, 2024
-* [TS-SEP: Joint Diarization and Separation Conditioned on Estimated Speaker Embeddings](https://arxiv.org/abs/2303.03849), *IEEE/ACM Transactions on Audio, Speech, and Language Processing (TASLP)*, 2024
+* [AS-PVAD: A Frame-Wise Personalized Voice Activity Detection Network with Attentive Score Loss](https://doi.org/10.1109/ICASSP48485.2024.10446941), *IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)*, 2024
 * [Target-Speaker Voice Activity Detection via Sequence-to-Sequence Prediction](https://arxiv.org/abs/2210.16127), *IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)*, 2023
 * [Target Speaker Voice Activity Detection with Transformers and Its Integration with End-to-End Neural Diarization](https://arxiv.org/abs/2208.13085), *2022 IEEE Spoken Language Technology Workshop (SLT)*, 2023
-* [Unsupervised Adaptation with Quality-Aware Masking to Improve Target-Speaker Voice Activity Detection for Speaker Diarization](https://doi.org/10.21437/Interspeech.2023-1502), *Proc. Interspeech*, 2023
-* [Weakly Supervised Target-Speaker Voice Activity Detection](https://doi.org/10.1109/BIGCOM61073.2023.00041), *IEEE International Conference on Big Data Computing and Communications (BIGCOM)*, 2023
 * [Online Target Speaker Voice Activity Detection for Speaker Diarization](https://arxiv.org/abs/2207.05920), *Proc. Interspeech*, 2022
 * [Incorporating End-to-End Framework Into Target-Speaker Voice Activity Detection](https://doi.org/10.1109/ICASSP43922.2022.9747772), *IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)*, 2022
+
+### Speaker enrollment, representation, and profile robustness
+
+* [Adaptive Speaker Embedding Self-Augmentation for Personal Voice Activity Detection with Short Enrollment Speech](https://arxiv.org/abs/2601.12769), *IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)*, 2026
+* [EEND-SAA: Enrollment-Less Main Speaker Voice Activity Detection Using Self-Attention Attractors](https://arxiv.org/abs/2509.11957), *arXiv preprint arXiv:2509.11957*, 2025
+* [Investigation of Speaker Representation for Target-Speaker Speech Processing](https://arxiv.org/abs/2410.11243), *IEEE Spoken Language Technology Workshop (SLT)*, 2024
+* [Personal Voice Activity Detection with Ultra-Short Reference Speech](https://doi.org/10.1109/APSIPAASC63619.2024.10849125), *Asia-Pacific Signal and Information Processing Association Annual Summit and Conference (APSIPA ASC)*, 2024
+* [Efficient Personal Voice Activity Detection with Wake Word Reference Speech](https://doi.org/10.1109/ICASSP48485.2024.10447922), *IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)*, 2024
+* [Profile-Error-Tolerant Target-Speaker Voice Activity Detection](https://arxiv.org/abs/2309.12521), *IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)*, 2024
+* [Enrollment-less training for personalized voice activity detection](https://arxiv.org/abs/2106.12132), *Proc. Interspeech*, 2021
+* [Target-Speaker Voice Activity Detection with Improved i-Vector Estimation for Unknown Number of Speaker](https://arxiv.org/abs/2108.03342), *Proc. Interspeech*, 2021
+
+### Self-supervised pretraining, adaptation, and weak supervision
+
+* [Noise-Robust Target-Speaker Voice Activity Detection Through Self-Supervised Pretraining](https://arxiv.org/abs/2501.03184), *arXiv preprint arXiv:2501.03184*, 2025
+* [Self-supervised Pretraining for Robust Personalized Voice Activity Detection in Adverse Conditions](https://arxiv.org/abs/2312.16613), *IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)*, 2024
+* [Unsupervised Adaptation with Quality-Aware Masking to Improve Target-Speaker Voice Activity Detection for Speaker Diarization](https://doi.org/10.21437/Interspeech.2023-1502), *Proc. Interspeech*, 2023
+* [Weakly Supervised Target-Speaker Voice Activity Detection](https://doi.org/10.1109/BIGCOM61073.2023.00041), *IEEE International Conference on Big Data Computing and Communications (BIGCOM)*, 2023
+
+### Multi-channel, spatial, and audio-visual methods
+
+* [Multi-Input Multi-Output Target-Speaker Voice Activity Detection For Unified, Flexible, and Robust Audio-Visual Speaker Diarization](https://arxiv.org/abs/2401.08052), *IEEE/ACM Transactions on Audio, Speech, and Language Processing (TASLP)*, 2025
+* [Selective Channel Attention based Target Speaker Voice Activity Detection for Speaker Diarization under AD-HOC Microphone Array Settings](https://doi.org/10.21437/Interspeech.2025-1749), *Proc. Interspeech*, 2025
+* [Array Configuration-Agnostic Personal Voice Activity Detection Based on Spatial Coherence](https://arxiv.org/abs/2304.08887), *Proc. INTER-NOISE*, 2023
 * [Cross-Channel Attention-Based Target Speaker Voice Activity Detection: Experimental Results for M2MeT Challenge](https://arxiv.org/abs/2202.02687), *IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)*, 2022
 * [Polynomial Eigenvalue Decomposition-Based Target Speaker Voice Activity Detection in the Presence of Competing Talkers](https://doi.org/10.1109/IWAENC53105.2022.9914796), *IEEE International Workshop on Acoustic Signal Enhancement (IWAENC)*, 2022
-* [Target-Speaker Voice Activity Detection with Improved i-Vector Estimation for Unknown Number of Speaker](https://arxiv.org/abs/2108.03342), *Proc. Interspeech*, 2021
-* [Target-Speaker Voice Activity Detection: a Novel Approach for Multi-Speaker Diarization in a Dinner Party Scenario](https://arxiv.org/abs/2005.07272), *Proc. Interspeech*, 2020
+
+### Joint modeling with ASR, speech extraction, and speaker verification
+
+* [End-to-End Target Speaker Speech Recognition with Voice Activity Detection Fusion](https://doi.org/10.1016/j.dsp.2026.105966), *Digital Signal Processing*, 2026
+* [Universal Speaker Embedding Free Target Speaker Extraction and Personal Voice Activity Detection](https://arxiv.org/abs/2501.03612), *Computer Speech & Language*, 2025
+* [TS-SEP: Joint Diarization and Separation Conditioned on Estimated Speaker Embeddings](https://arxiv.org/abs/2303.03849), *IEEE/ACM Transactions on Audio, Speech, and Language Processing (TASLP)*, 2024
+* [SVVAD: Personal Voice Activity Detection for Speaker Verification](https://arxiv.org/abs/2305.19581), *Proc. Interspeech*, 2023
+* [Personalizing Speech Start Point and End Point Detection in ASR Systems from Speaker Embeddings](https://doi.org/10.1109/SLT48900.2021.9383603), *IEEE Spoken Language Technology Workshop (SLT)*, 2021
+* [Sparsely Overlapped Speech Training in the Time Domain: Joint Learning of Target Speech Separation and Personal VAD Benefits](https://arxiv.org/abs/2106.14371), *Asia-Pacific Signal and Information Processing Association Annual Summit and Conference (APSIPA ASC)*, 2021
 
 ## Other learning materials
 
